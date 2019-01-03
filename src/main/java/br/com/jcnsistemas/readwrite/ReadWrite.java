@@ -1,10 +1,5 @@
 package br.com.jcnsistemas.readwrite;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,7 +18,8 @@ public class ReadWrite {
 
         File folder = new File("C:\\Users\\Andrade\\Documents\\Arquivo Ello\\Envia\\");
         File archiveCSV = new File("C:\\Users\\Andrade\\Documents\\Arquivo Ello\\Recebe\\data.csv");
-         File newFile = new File(folder, "BASE_CADASTRAL_FACILITADOR_4058_" + data + ".txt");
+        File newFile = new File(folder, "BASE_CADASTRAL_FACILITADOR_4058_" + data + ".txt");
+        
         BufferedReader br = null;
         BufferedWriter bw = null;
         String line = "";
@@ -34,12 +30,16 @@ public class ReadWrite {
         
         try {
             if (!folder.exists()) {
+            	System.out.println("Criando a pasta de destino do arquivo");
                 folder.mkdir();
             }
-
+            
+            System.out.println("Lendo o arquivo");
             br = new BufferedReader(new FileReader(archiveCSV));
+            System.out.println("Criando o arquivo para salvar escrever");
             bw = new BufferedWriter(new FileWriter(newFile));
 
+            System.out.println("Percorrendo o arquivo");
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split(csvDivisor);                
                 String newLine = codRegistro + ";" + numSequencial + ";";
@@ -50,8 +50,10 @@ public class ReadWrite {
                         break;
                     }
                     
+                   //Verificando se a coluna 1 esta  vazia, caso sim copia a coluna 2 na coluna 1
                    // if (columns[1].equals("\"\"")) {
-                   //if (columns[1].equals("")) {	
+                   //if (columns[1].equals("")) {
+                    
                 	   if (columns[1].length() == 0) {	   
                         columns[1] = columns[2];
                     }
@@ -68,9 +70,11 @@ public class ReadWrite {
                 numSequencial++;
                 if (numSequencial > 1) {
                     codRegistro = "01";
-                }       
+                } 
+                
                 bw.write(line);
                 bw.newLine();
+                //System.out.println("Escrevendo linha no arquivo");
                 bw.flush();
 
             }
@@ -78,13 +82,15 @@ public class ReadWrite {
             String fimLine = "";
             line = fimLine + "09;" + numSequencial;
             bw.write(line);
+            System.out.println("Escrevendo ultima linha no arquivo");
             bw.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (br != null || bw != null) {
-                try {
+            	
+                try {                	
                     br.close();
                     bw.close();
                 } catch (IOException e) {
